@@ -7,7 +7,7 @@ Ciclo: CFGS Administración de Sistemas Informáticos en Red.
 
 **Introducción**
 ------------
-El objetivo de este proyecto es crear una demo funcional de una página de e-learning similar a LMS Cambridge o Udemy empleando los conocimientos adquiridos durante el curso, especialmente la asignatura de Implamtación de Aplicaciones Web.
+El objetivo de este proyecto es crear una demo funcional de una página de e-learning similar a LMS Cambridge o Udemy empleando los conocimientos adquiridos durante el curso, especialmente la asignatura de Implantación de Aplicaciones Web.
 
 **Fases del desarrollo**
 ------------
