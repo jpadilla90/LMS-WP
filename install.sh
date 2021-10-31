@@ -9,8 +9,8 @@ set -x
 # IP pública o local (Pruebas)
 IP=192.168.0.41
 
-# Activamos la expansión de generar alias para bash, normalmente desactivada
-shopt -s expand_aliases
+# Activamos la expansión de generar alias para bash, normalmente desactivada [no en uso]
+#shopt -s expand_aliases
 
 # Test de funcionamiento de alias
 alias testme="echo It Worked"
@@ -34,9 +34,8 @@ systemctl start docker
 docker-compose up -d
 echo "Configurando el sitio Wordpress"
 
-# Asignamos un alias para lanzar comandos al contenedor wp-cli de manera ágil
-alias wp="sudo docker-compose exec wordpress wp"
-
+## Asignamos un alias para lanzar comandos al contenedor wp-cli de manera ágil [no en uso]
+#alias wp="sudo docker-compose exec wordpress wp"
 # Comandos de wp-cli:
 
 
