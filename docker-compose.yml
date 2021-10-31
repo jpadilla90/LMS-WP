@@ -59,25 +59,16 @@ services:
     restart: always
 
     # Servicio Wordpress CLI
-  wordpress-cli:
-    # Se instala tras las dependencias.
-    depends_on:
-      - mysql
-      - wordpress
+  wpcli:
     image: wordpress:cli
-    #[Prueba integración de código] El usuario 'xfs' comparte PID con la instalación de Wordpress.
-    # Esto evita problemas con los permisos al usar WP-CLI.
-    # https://stackoverflow.com/questions/50999848/how-to-run-wp-cli-in-docker-compose-yml
-    user: xfs
-    # Paso adicional para asegurarnos de que la instalación ocurre despues de la instalación de mysql.
-    command: >
-      /bin/sh -c '
-      sleep 10;
-      wp core install --path="/var/www/html" --url="http://localhost:8000" --title="Local Wordpress By Docker" --admin_user=admin --admin_password=secret --admin_email=foo@bar.com
-      '
-    # vstm: Volumen compartido 
-    volumes:
-      - wordpress_data:/var/www/html
+    volumes_from:
+      - wordpress
+    links:
+      - mysql
+    entrypoint: wordpress
+    command: "--info"
+      #Lanzamos los comandos con 'docker-compose run --rm wpcli [COMANDO]'
+      #recomendable convertirlo en alias
 
 # Definimos las dos redes necesarias. Ojo con la indentación.
 networks:
