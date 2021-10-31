@@ -33,8 +33,8 @@ apt install docker docker-compose -y
 systemctl enable docker
 systemctl start docker
 
-# Levantamos los servicios. 
-docker-compose up -d 
+# Levantamos los servicios. --remover orphans estará durante la fase de pruebas.
+docker-compose up -d --remove orphans
 echo "Configurando el sitio Wordpress"
 
 # Asignamos un alias para lanzar comandos al contenedor wp-cli de manera ágil
