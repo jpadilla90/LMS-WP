@@ -81,8 +81,12 @@ volumes:
     wordpress_data:
 
 
-
+##
 ## Anexo: sobre 'PMA' (PhpMyAdmin)##
+
+## Para finalizar docker-compose ##
+#docker-compose down -v 
+#con -v elimina los volúmenes a la vez, útil para prácticas.
 
 # Podemos fijar dos variables de entorno. PMA_HOST y PMA_ARBITRARY=1
 # PMA_HOST nos permite indicar el nombre del contenedor con el que quiero conectarme desde phpMyAdmin.
