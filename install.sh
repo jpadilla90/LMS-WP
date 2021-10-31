@@ -8,9 +8,6 @@ set -x
 ## Variables ##
 # IP pública o local (Pruebas)
 IP=192.168.0.41
-DB_NAME=wp_db
-DB_USER=wp_user
-DB_PASSWORD=wp_pass
 
 # Activamos la expansión de generar alias para bash, normalmente desactivada
 shopt -s expand_aliases
@@ -40,14 +37,7 @@ echo "Configurando el sitio Wordpress"
 # Asignamos un alias para lanzar comandos al contenedor wp-cli de manera ágil
 alias wp="sudo docker-compose exec wordpress wp"
 
-# Descargamos Wordpress
-wp core download --path=/var/www/html --locale=es_ES --allow-root
-
-# Creamos nuestro sitio LMS 'Beaver LMS'
-wp core install --url=$IP --title="Tu sitio LMS" --admin_user=admin --admin_password=admin_password --admin_email=test@test.com--allow-root
-
-# Configuramos el archivo de configuración de Wordpress.
-wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --allow-root
+# Comandos de wp-cli:
 
 
 ## Notas de docker-compose ##

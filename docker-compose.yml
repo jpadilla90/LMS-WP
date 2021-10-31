@@ -46,7 +46,8 @@ services:
   wordpress:
     # Lanzamos los comandos con 'docker-compose exec wordpress wp --info'
     # Podemos convertirlo en alias así: "alias wp="sudo docker-compose exec wordpress wp"
-    image: conetix/wordpress-with-wp-cli
+    # Usamos esta imagen con cli incorporado https://hub.docker.com/r/conetix/wordpress-with-wp-cli/
+    image: wordpress
     ports:
         - "80:80"
     environment:
@@ -60,6 +61,24 @@ services:
         - backend-network
     restart: always
 
+  wordpress-cli:
+    image: wordpress:cli
+    depends_on:
+        - mysql
+        - wordpress
+    ## Importante: La ID del usuario cambia de Wordpress a wordpress-cli. Es necesario que ambas sean '33'
+    user: "33"
+    volumes:
+        - wordpress_data:/var/www/html
+    networks:
+        - frontend-network
+        - backend-network
+    restart: always
+    command: >
+      /bin/sh -c '
+      sleep 10;
+      wp core install --path="/var/www/html" --url="http://localhost:80" --title="Generic LMS" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com
+      '
 
 # Definimos las dos redes necesarias. Ojo con la indentación.
 networks:
