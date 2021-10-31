@@ -1,7 +1,7 @@
 # Platilla básica de docker-compose para una instalación de Wordpress.
 # >Se deben definir las variables de entorno con el archivo .env correspondiente.
 # La versión puede ser necesaria para compatibilidad >Se deben hacer pruebas con esto.
-version: '3.9'
+version: '3.4'
 
 # Cada servicio requiere un contenedor
 services:
@@ -51,7 +51,7 @@ services:
     depends_on:
         - mysql
     ports:
-        - "8000:80"
+        - "80:80"
     environment:
         - WORDPRESS_DB_NAME=wp_database
         - WORDPRESS_DB_USER=wp_user
@@ -80,7 +80,7 @@ services:
     command: >
       /bin/sh -c '
       sleep 15;
-      wp core install --path="/var/www/html" --url="http://localhost:8000 --title="Generic LMS" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com
+      wp core install --path="/var/www/html" --url="http://localhost:80 --title="Generic LMS" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com
       '
 
 # Definimos las dos redes necesarias. Ojo con la indentación.
