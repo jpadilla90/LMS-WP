@@ -65,8 +65,6 @@ services:
       - wordpress_data:/var/www/html
     links:
       - mysql
-    entrypoint: wordpress
-    command: "--info"
       #Lanzamos los comandos con 'docker-compose run --rm wpcli [COMANDO]'
       #recomendable convertirlo en alias
 
