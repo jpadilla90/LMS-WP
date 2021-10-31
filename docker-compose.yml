@@ -45,7 +45,7 @@ services:
     # Servicio Wordpress
   wordpress:
     # Lanzamos los comandos con 'docker-compose exec wordpress wp --info'
-    # Podemos convertirlo en alias
+    # Podemos convertirlo en alias así: "alias wp="sudo docker-compose exec wordpress wp"
     image: conetix/wordpress-with-wp-cli
     ports:
         - "80:80"
