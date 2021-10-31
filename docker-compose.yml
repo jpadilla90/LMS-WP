@@ -60,9 +60,14 @@ services:
 
     # Servicio Wordpress CLI
   wpcli:
+    depends_on:
+    - wordpress
+    - mysql
     image: wordpress:cli
     volumes:
       - wordpress_data:/var/www/html
+      - mysql_data:/var/lib/mysql
+      - ./:/var/www/html/wp-content
     links:
       - mysql
       #Lanzamos los comandos con 'docker-compose run --rm wpcli [COMANDO]'
