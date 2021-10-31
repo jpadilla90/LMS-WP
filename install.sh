@@ -12,6 +12,14 @@ DB_NAME=wp_db
 DB_USER=wp_user
 DB_PASSWORD=wp_pass
 
+# Activamos la expansión de generar alias para bash, normalmente desactivada
+shopt -s expand_aliases
+
+# Test de funcionamiento de alias
+alias testme="echo It Worked"
+alias
+testme
+
 # Nos dirigimos al directorio de instalación en caso de no estarlo
 cd LMS-WP
 
