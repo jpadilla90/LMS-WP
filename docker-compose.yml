@@ -61,8 +61,8 @@ services:
     # Servicio Wordpress CLI
   wpcli:
     image: wordpress:cli
-    volumes_from:
-      - wordpress
+    volumes:
+      - wordpress_data:/var/www/html
     links:
       - mysql
     entrypoint: wordpress
