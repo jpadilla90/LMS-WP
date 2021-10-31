@@ -33,8 +33,8 @@ apt install docker docker-compose -y
 systemctl enable docker
 systemctl start docker
 
-# Levantamos los servicios. --remover orphans estará durante la fase de pruebas.
-docker-compose up -d --remove orphans
+# Levantamos los servicios.
+docker-compose up -d
 echo "Configurando el sitio Wordpress"
 
 # Asignamos un alias para lanzar comandos al contenedor wp-cli de manera ágil
@@ -53,6 +53,6 @@ wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --all
 ## Notas de docker-compose ##
 
 # Usaremos la siguiente línea para detener los servicios docker. El parámetro '-v' elimina los volúmenes creados por docker-compose. Esto es útil para hacer pruebas.
-# docker-compose down -v 
+# docker-compose down -v --remove-orphans
 
 #Con '--scale X' en nuestro archivo docker-compose podemos crear un número de instancias del mismo servicio. 
