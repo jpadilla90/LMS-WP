@@ -82,7 +82,7 @@ services:
         - frontend-network
         - backend-network
     command: >
-      /bin/sh -c '
+      /bin/sh -c '      
       wp core install --path=/var/www/html --url=http://localhost --title="LMS Genérico" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
       '
 # Definimos las dos redes necesarias. Ojo con la indentación.
