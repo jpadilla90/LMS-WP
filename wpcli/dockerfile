@@ -1,7 +1,0 @@
-FROM wordpress:cli-php8.0
-# Facilitamos la localización de fallos durante la fase de pruebas.
-RUN echo 'Probando wait-for-it. Ojo al log.'
-# Copiamos el script desde la carpeta actual al contenedor.
-COPY wait-for-it.sh /wait-for-it.sh
-# Ejecutamos el script con permisos de administrador.
-RUN chmod +x /wait-for-it.sh
