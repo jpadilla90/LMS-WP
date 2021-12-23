@@ -57,7 +57,7 @@ services:
         - WORDPRESS_DB_USER=wp_user
         - WORDPRESS_DB_PASSWORD=wp_password
         - WORDPRESS_DB_HOST=mysql
-        - WAIT_HOSTS: mysql:3306
+        - WAIT_HOSTS=mysql:3306
 
     volumes:
         - wordpress_data:/var/www/html
