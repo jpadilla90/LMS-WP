@@ -13,3 +13,13 @@ CMD /wait
 # Damos al script permisos de ejecución.
 # RUN chmod +x /wait-for.sh
 # CMD ["/var/www/html/wait-for-it.sh" , "mysql:3306" , "--strict" , "--timeout=300" , "--" , "/usr/local/bin/docker-entrypoint.sh", "apache2-foreground"]
+
+
+FROM wordpress:5.8.1
+## Añadimos el script de espera a nuestra imagen Wordpress
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
+RUN chmod +x /wait
+## Lanzamos el script de espera. Los parámetros aparecen en nuestro .yml
+CMD /wait
+
+
