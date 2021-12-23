@@ -6,16 +6,6 @@ version: '3.4'
 # Cada servicio requiere un contenedor
 
 services:
- # Servicio Apache
-  apache:
-    ports:
-        - 8080:80
-    networks:
-        - frontend-network
-        - backend-network
-    depends_on:
-        - mysql
-    restart: always   
  # Servicio Phpmyadmin
   phpmyadmin:
     # Imagen Docker
