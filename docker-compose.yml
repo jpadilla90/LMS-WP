@@ -47,6 +47,7 @@ services:
     image: wordpress:5.8.1
     depends_on:
         - mysql
+        - wpcli
     ports:
         - "80:80"
     environment:
