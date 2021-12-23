@@ -43,10 +43,31 @@ services:
         - backend-network
     restart: always
 
+  wordpress:
+    image: wordpress:5.8.1
+    depends_on:
+        - mysql
+    ports:
+        - "80:80"
+    environment:
+        - WORDPRESS_DB_NAME=wp_database
+        - WORDPRESS_DB_USER=wp_user
+        - WORDPRESS_DB_PASSWORD=wp_password
+        - WORDPRESS_DB_HOST=mysql        
+    volumes:
+        - wordpress_data:/var/www/html
+    networks:
+        - frontend-network
+        - backend-network
+    restart: always
+
+  
     # Servicio Wordpress versión CLI
     # Lanzamos los comandos con 'docker-compose exec wordpress wp --info'
     # Podemos convertirlo en alias así: "alias wp="sudo docker-compose exec wordpress wp"
     # Usamos esta imagen con cli incorporado https://hub.docker.com/r/conetix/wordpress-with-wp-cli/
+ 
+ 
   wpcli:
     image: wordpress:cli-php8.0
     depends_on:
@@ -67,7 +88,7 @@ services:
         - backend-network
     command: >
       /bin/sh -c '      
-      wp core install --path=/var/www/html --url=http://localhost --title="LMS Genérico" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root --url="http://localhost:8000"
+      wp core install --path=/var/www/html --url=http://localhost --title="LMS Genérico" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
       '
 # Definimos las dos redes necesarias. Ojo con la indentación.
 networks:
