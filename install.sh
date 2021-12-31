@@ -31,7 +31,7 @@ systemctl enable docker
 systemctl start docker
 
 # Levantamos los servicios.
-docker-compose up -d --wait
+docker-compose up -d
 echo "Configurando el sitio Wordpress"
 
 ## Asignamos un alias para lanzar comandos al contenedor wp-cli de manera ágil [no en uso]
