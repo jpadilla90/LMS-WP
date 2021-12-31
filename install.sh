@@ -7,7 +7,7 @@ set -x
 
 ## Variables ##
 # IP pública o local (Pruebas)
-IP=192.168.0.41
+IP=192.168.0.16
 
 # Activamos la expansión de generar alias para bash, normalmente desactivada [no en uso]
 #shopt -s expand_aliases
