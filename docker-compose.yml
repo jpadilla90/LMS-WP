@@ -72,6 +72,7 @@ services:
  
  
   wpcli:
+    # Es necesario usar 'links: mysql:mysql' ?
     image: wordpress:cli-php8.0
     depends_on:
         - mysql
@@ -83,9 +84,10 @@ services:
         - WORDPRESS_DB_USER=wp_user
         - WORDPRESS_DB_PASSWORD=wp_password
         - WORDPRESS_DB_HOST=mysql
+        - WAIT_HOSTS=mysql:3306 
     # Usamos el mismo volumen que wp-cli.
-    volumes:
-        - wp_data:/var/www/html
+    volumes_from:
+        - wordpress
     networks:
         - frontend-network
         - backend-network
@@ -98,10 +100,10 @@ networks:
     frontend-network:
     backend-network:
 
-# Definimos los volúmenes disponibles: Uno para la base de datos y otro para los datos de Wordpress.
+# Definimos los volúmenes disponibles: Uno para la BD y otro para los datos de Wordpress.
 volumes:    
     mysql_data:
-    wordpress_data:
+    wp_data:
 
 
 
