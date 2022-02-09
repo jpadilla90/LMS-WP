@@ -6,7 +6,26 @@ version: '3.4'
 # Cada servicio requiere un contenedor
 
 services:
- # Servicio Phpmyadmin
+
+# Servicio MySQL.
+  mysql:
+    image: mysql:8.0
+    # El comando evita que use la contraseña de root en vez de la de mysql.
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=wp_database
+        - MYSQL_USER=wp_user
+        - MYSQL_PASSWORD=wp_password
+    volumes:
+        - mysql_data:/var/lib/mysql
+    networks:
+        - backend-network
+    restart: always
+
+# Servicio Phpmyadmin
   phpmyadmin:
     # Imagen Docker
     image: phpmyadmin:5.1
@@ -24,23 +43,6 @@ services:
     depends_on:
         - mysql
     # Si hay fallo en el servicio, se reinicia.
-    restart: always
-
-    # Servicio MySQL. El commando evita que use la contraseña de root en vez de la de mysql.
-  mysql:
-    image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
-    ports:
-      - "3306:3306"
-    environment:
-        - MYSQL_ROOT_PASSWORD=root
-        - MYSQL_DATABASE=wp_database
-        - MYSQL_USER=wp_user
-        - MYSQL_PASSWORD=wp_password
-    volumes:
-        - mysql_data:/var/lib/mysql
-    networks:
-        - backend-network
     restart: always
 
   wordpress:
@@ -72,6 +74,7 @@ services:
     image: wordpress:cli-php8.0
     depends_on:
         - mysql
+        - wordpress
     ## Este usuario emplea el mismo id de usuario que wordpress, 33. Se evitan problemas de permisos usando cli.
     user: xfs
     environment:
@@ -79,8 +82,6 @@ services:
         - WORDPRESS_DB_USER=wp_user
         - WORDPRESS_DB_PASSWORD=wp_password
         - WORDPRESS_DB_HOST=mysql
-        - WAIT_HOSTS=mysql:3306
-
     volumes:
         - wordpress_data:/var/www/html
     networks:
