@@ -86,8 +86,8 @@ services:
         - WORDPRESS_DB_HOST=mysql
         - WAIT_HOSTS=mysql:3306 
     # Usamos el mismo volumen que wp-cli.
-    volumes_from:
-        - wordpress
+    volumes:
+        - wp_data:/var/www/html
     networks:
         - frontend-network
         - backend-network
