@@ -10,7 +10,8 @@ RUN chmod +x /wait
 
 ## Añadimos la aplicación a la imagen de docker
 ADD wordpress.sh /wordpress.sh
+
 ## Lanzamos el script de espera. Los parámetros aparecen en nuestro .yml como WAIT-HOSTS
-CMD /wait && /wordpress.sh
+CMD /wait && echo "Esperando a MySQL" && /wordpress.sh
 
 

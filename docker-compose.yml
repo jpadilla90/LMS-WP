@@ -59,7 +59,8 @@ services:
         - WAIT_HOSTS=mysql:3306 
         # Parte del script del dockerfile /wait para esperar a que MySQL este operativo https://github.com/ufoscout/docker-compose-wait       
     volumes:
-        - wordpress_data:/var/www/html
+        # Usamos el mismo volumen que wp-cli.
+        - wp_data:/var/www/html
     networks:
         - frontend-network
         - backend-network
@@ -82,8 +83,9 @@ services:
         - WORDPRESS_DB_USER=wp_user
         - WORDPRESS_DB_PASSWORD=wp_password
         - WORDPRESS_DB_HOST=mysql
+    # Usamos el mismo volumen que wp-cli.
     volumes:
-        - wordpress_data:/var/www/html
+        - wp_data:/var/www/html
     networks:
         - frontend-network
         - backend-network
