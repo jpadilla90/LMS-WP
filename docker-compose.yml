@@ -24,6 +24,11 @@ services:
     networks:
         - backend-network
     restart: always
+    healthcheck:
+        test: mysql --user=${MYSQL_USER:-wp_user} --password=${MYSQL_PASSWORD:-wp_password} -e "USE wp_database;"
+        interval: 30s
+        timeout: 10s
+        retries: 3
 
 # Servicio Phpmyadmin
   phpmyadmin:
@@ -41,14 +46,16 @@ services:
         - backend-network
     # Establecemos dependencias con otros servicios.
     depends_on:
-        - mysql
+        mysql:
+            condition: service_healthy
     # Si hay fallo en el servicio, se reinicia.
     restart: always
 
   wordpress:
     image: wordpress:5.8.1
     depends_on:
-        - mysql
+        mysql:
+            condition: service_healthy
     ports:
         - "80:80"
     environment:
@@ -65,6 +72,11 @@ services:
         - frontend-network
         - backend-network
     restart: always
+    healthcheck:
+        test: curl --fail http://wordpress || exit 1
+        interval: 30s
+        timeout: 10s
+        retries: 3
 
     # Servicio Wordpress versión CLI
     # Lanzamos los comandos con 'docker-compose exec wordpress wp --info'
@@ -75,8 +87,11 @@ services:
     # Es necesario usar 'links: mysql:mysql' ?
     image: wordpress:cli-php8.0
     depends_on:
-        - mysql
-        - wordpress
+        mysql:
+            condition: service_healthy
+        wordpress:
+            condition: service_healthy
+
     ## Este usuario emplea el mismo id de usuario que wordpress, 33. Se evitan problemas de permisos usando cli.
     user: xfs
     environment:
@@ -95,6 +110,8 @@ services:
       /bin/sh -c '      
       wp core install --path=/var/www/html --url=http://localhost --title="LMS Genérico" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
       '
+
+
 # Definimos las dos redes necesarias. Ojo con la indentación.
 networks:
     frontend-network:
