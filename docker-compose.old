@@ -4,8 +4,33 @@
 version: '3.4'
 
 # Cada servicio requiere un contenedor
+
 services:
- # Servicio Phpmyadmin
+
+# Servicio MySQL.
+  mysql:
+    image: mysql:8.0
+    # El comando evita que use la contraseña de root en vez de la de mysql.
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=wp_database
+        - MYSQL_USER=wp_user
+        - MYSQL_PASSWORD=wp_password
+    volumes:
+        - mysql_data:/var/lib/mysql
+    networks:
+        - backend-network
+    restart: always
+    healthcheck:
+        test: mysql --user=${MYSQL_USER:-wp_user} --password=${MYSQL_PASSWORD:-wp_password} -e "USE wp_database;"
+        interval: 30s
+        timeout: 10s
+        retries: 3
+
+# Servicio Phpmyadmin
   phpmyadmin:
     # Imagen Docker
     image: phpmyadmin:5.1
@@ -21,54 +46,52 @@ services:
         - backend-network
     # Establecemos dependencias con otros servicios.
     depends_on:
-        - mysql
+        mysql:
+            condition: service_healthy
     # Si hay fallo en el servicio, se reinicia.
     restart: always
 
-    # Servicio MySQL. El commando evita que use la contraseña de root en vez de la de mysql.
-  mysql:
-    image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
-    ports:
-      - "3306:3306"
-    environment:
-        - MYSQL_ROOT_PASSWORD=root
-        - MYSQL_DATABASE=wp_database
-        - MYSQL_USER=wp_user
-        - MYSQL_PASSWORD=wp_password
-    volumes:
-        - mysql_data:/var/lib/mysql
-    networks:
-        - backend-network
-    restart: always
-
-    # Servicio Wordpress
   wordpress:
-    # Lanzamos los comandos con 'docker-compose exec wordpress wp --info'
-    # Podemos convertirlo en alias así: "alias wp="sudo docker-compose exec wordpress wp"
-    # Usamos esta imagen con cli incorporado https://hub.docker.com/r/conetix/wordpress-with-wp-cli/
     image: wordpress:5.8.1
     depends_on:
-        - mysql
+        mysql:
+            condition: service_healthy
     ports:
         - "80:80"
     environment:
         - WORDPRESS_DB_NAME=wp_database
         - WORDPRESS_DB_USER=wp_user
         - WORDPRESS_DB_PASSWORD=wp_password
-        - WORDPRESS_DB_HOST=mysql        
+        - WORDPRESS_DB_HOST=mysql
+        - WAIT_HOSTS=mysql:3306 
+        # Parte del script del dockerfile /wait para esperar a que MySQL este operativo https://github.com/ufoscout/docker-compose-wait       
     volumes:
-        - wordpress_data:/var/www/html
+        # Usamos el mismo volumen que wp-cli.
+        - wp_data:/var/www/html
     networks:
         - frontend-network
         - backend-network
     restart: always
+    healthcheck:
+        test: curl --fail http://wordpress || exit 1
+        interval: 30s
+        timeout: 10s
+        retries: 3
 
+    # Servicio Wordpress versión CLI
+    # Lanzamos los comandos con 'docker-compose exec wordpress wp --info'
+    # Podemos convertirlo en alias así: "alias wp="sudo docker-compose exec wordpress wp"
+ 
+ 
   wpcli:
+    # Es necesario usar 'links: mysql:mysql' ?
     image: wordpress:cli-php8.0
     depends_on:
-        - mysql
-        - wordpress
+        mysql:
+            condition: service_healthy
+        wordpress:
+            condition: service_healthy
+
     ## Este usuario emplea el mismo id de usuario que wordpress, 33. Se evitan problemas de permisos usando cli.
     user: xfs
     environment:
@@ -76,36 +99,31 @@ services:
         - WORDPRESS_DB_USER=wp_user
         - WORDPRESS_DB_PASSWORD=wp_password
         - WORDPRESS_DB_HOST=mysql
+        - WAIT_HOSTS=mysql:3306 
+    # Usamos el mismo volumen que wp-cli.
     volumes:
-        - wordpress_data:/var/www/html
+        - wp_data:/var/www/html
     networks:
         - frontend-network
         - backend-network
-    ## Sleep permite que se inicialice correctamente mysql antes de preparar el sitio web. (Reparar)
     command: >
-      /bin/sh -c '
-      sleep 40;
+      /bin/sh -c '      
       wp core install --path=/var/www/html --url=http://localhost --title="LMS Genérico" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
       '
+
 
 # Definimos las dos redes necesarias. Ojo con la indentación.
 networks:
     frontend-network:
     backend-network:
 
-# Definimos los volúmenes disponibles: Uno para la base de datos y otro para los datos de Wordpress.
+# Definimos los volúmenes disponibles: Uno para la BD y otro para los datos de Wordpress.
 volumes:    
     mysql_data:
-    wordpress_data:
+    wp_data:
 
 
-##
-## Anexo: sobre 'PMA' (PhpMyAdmin)##
 
 ## Para finalizar docker-compose ##
-#docker-compose down -v 
-#con -v elimina los volúmenes a la vez, útil para prácticas.
-
-# Podemos fijar dos variables de entorno. PMA_HOST y PMA_ARBITRARY=1
-# PMA_HOST nos permite indicar el nombre del contenedor con el que quiero conectarme desde phpMyAdmin.
-# PMA_ARBITRARY=1 nos ofrecerá un cuadro de texto en el login de phpMyAdmin, indicando el nombre del contenedor al que quieres conectarte.
+# docker-compose down -v
+# -v elimina los volúmenes 

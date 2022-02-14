@@ -15,10 +15,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-        - MYSQL_ROOT_PASSWORD=root
-        - MYSQL_DATABASE=wp_database
-        - MYSQL_USER=wp_user
-        - MYSQL_PASSWORD=wp_password
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
         - mysql_data:/var/lib/mysql
     networks:
@@ -63,8 +63,6 @@ services:
         - WORDPRESS_DB_USER=wp_user
         - WORDPRESS_DB_PASSWORD=wp_password
         - WORDPRESS_DB_HOST=mysql
-        - WAIT_HOSTS=mysql:3306 
-        # Parte del script del dockerfile /wait para esperar a que MySQL este operativo https://github.com/ufoscout/docker-compose-wait       
     volumes:
         # Usamos el mismo volumen que wp-cli.
         - wp_data:/var/www/html
@@ -95,11 +93,10 @@ services:
     ## Este usuario emplea el mismo id de usuario que wordpress, 33. Se evitan problemas de permisos usando cli.
     user: xfs
     environment:
-        - WORDPRESS_DB_NAME=wp_database
-        - WORDPRESS_DB_USER=wp_user
-        - WORDPRESS_DB_PASSWORD=wp_password
-        - WORDPRESS_DB_HOST=mysql
-        - WAIT_HOSTS=mysql:3306 
+        - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+        - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+        - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
     # Usamos el mismo volumen que wp-cli.
     volumes:
         - wp_data:/var/www/html
