@@ -16,9 +16,9 @@ services:
       - "3306:3306"
     environment:
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - MYSQL_DATABASE=${WORDPRESS_DB_NAME}
+        - MYSQL_USER=${WORDPRESS_DB_USER}
+        - MYSQL_PASSWORD=${WORDPRESS_DB_PASSWORD}
     volumes:
         - mysql_data:/var/lib/mysql
     networks:
@@ -46,8 +46,8 @@ services:
         - backend-network
     # Establecemos dependencias con otros servicios.
     depends_on:
-        mysql:
-            condition: service_healthy
+        - mysql:
+           condition: service_healthy
     # Si hay fallo en el servicio, se reinicia.
     restart: always
 
@@ -59,10 +59,10 @@ services:
     ports:
         - "80:80"
     environment:
-        - WORDPRESS_DB_NAME=wp_database
-        - WORDPRESS_DB_USER=wp_user
-        - WORDPRESS_DB_PASSWORD=wp_password
-        - WORDPRESS_DB_HOST=mysql
+        - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+        - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+        - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
     volumes:
         # Usamos el mismo volumen que wp-cli.
         - wp_data:/var/www/html
