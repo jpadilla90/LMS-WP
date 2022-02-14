@@ -39,7 +39,7 @@ services:
         - PMA_ARBITRARY=1
     # Redirección de puertos. 
     ports:
-        - 8080:80
+        - "8080:80"
     # Redes empleadas por este servicio (Definidas al final de la página.)
     networks:
         - frontend-network
