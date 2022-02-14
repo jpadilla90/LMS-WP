@@ -2,8 +2,8 @@
 Plataforma de e-learning sobre Wordpress usando Docker.
 
 > IES Celia Viñas (Almería) - Curso 2021/2022.
-Módulo: Proyecto integrado.
-Ciclo: CFGS Administración de Sistemas Informáticos en Red.
+> Módulo: Proyecto integrado.
+> Ciclo: CFGS Administración de Sistemas Informáticos en Red.
 
 **Introducción**
 ------------
@@ -32,9 +32,10 @@ El objetivo de este proyecto es crear una demo funcional de una página de e-lea
 **Archivos en el repositorio**
 ------------
 1. **README.md** Documentación.
-2. **docker.sh** Ejecutable para instalar docker y docker-compose
-3. **docker-compose.yml** Archivo de referencia para docker-compose
-4. **/media** Directorio para imagenes empleadas en la web.
+2. **Comandos.md** Listado comandos wp-cli.
+3. **docker-compose.yml** Archivo de referencia para docker-compose.
+4. **.env** Variables de entorno.
+5. **install** Ejecutable para instalar docker y docker-compose.
 
 **Referencias**
 ------------
