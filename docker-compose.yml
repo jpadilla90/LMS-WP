@@ -1,7 +1,7 @@
 # Plantilla básica de docker-compose para una instalación de Wordpress.
-# >Se deben definir las variables de entorno con el archivo .env correspondiente.
-# La versión puede ser necesaria para compatibilidad >Se deben hacer pruebas con esto.
-version: '3.4'
+
+# depends_on con condiciones no funciona en versiones 3x de docker-compose
+version: '2.4'
 
 # Cada servicio requiere un contenedor
 
