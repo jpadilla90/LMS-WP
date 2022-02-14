@@ -1,7 +1,7 @@
 # Plantilla básica de docker-compose para una instalación de Wordpress.
 
-# depends_on con condiciones no funciona en versiones 3x de docker-compose
-version: '2.4'
+
+version: '3.4'
 
 # Cada servicio requiere un contenedor
 
