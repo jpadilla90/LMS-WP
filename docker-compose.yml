@@ -34,6 +34,10 @@ services:
   phpmyadmin:
     # Imagen Docker
     image: phpmyadmin:5.1
+    # Establecemos dependencias con otros servicios.
+    depends_on:
+        mysql:
+           condition: service_healthy
     # Entorno empleado. Ver anexo al final del documento.
     environment:
         - PMA_ARBITRARY=1
@@ -44,10 +48,7 @@ services:
     networks:
         - frontend-network
         - backend-network
-    # Establecemos dependencias con otros servicios.
-    depends_on:
-        - mysql:
-           condition: service_healthy
+
     # Si hay fallo en el servicio, se reinicia.
     restart: always
 
