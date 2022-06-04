@@ -53,6 +53,7 @@ services:
     restart: always
 
   wordpress:
+    user: 1000:1000
     container_name: ${NAME}-wp
     image: wordpress:5.8.1
     depends_on:
@@ -85,6 +86,7 @@ services:
  
  
   wpcli:
+    user: 1000:1000
     container_name: ${NAME}-cli
     image: wordpress:cli-php8.0
     depends_on:
@@ -94,7 +96,7 @@ services:
             condition: service_healthy
 
     ## Este usuario emplea el mismo id de usuario que wordpress, 33. Se evitan problemas de permisos usando cli.
-    user: xfs
+    #user: xfs
     environment:
         - WORDPRESS_DB_HOST=${MYSQL_HOST}
         - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
@@ -109,6 +111,7 @@ services:
     command: >
       /bin/sh -c '      
       wp core install --path=/var/www/html --url=http://localhost --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
+      wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --allow-root
       '
 
 
