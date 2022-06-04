@@ -43,7 +43,7 @@ services:
         - PMA_ARBITRARY=1
     # Redirección de puertos. 
     ports:
-        - "8080:80"
+        - 8080:80
     # Redes empleadas por este servicio (Definidas al final de la página.)
     networks:
         - frontend-network
@@ -53,17 +53,19 @@ services:
     restart: always
 
   wordpress:
+    container_name: ${NAME}-wp
     image: wordpress:5.8.1
     depends_on:
         mysql:
             condition: service_healthy
     ports:
-        - "80:80"
+        - 80:80
+        - 443:443
     environment:
-        - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
-        - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
-        - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
-        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+        - WORDPRESS_DB_HOST=${MYSQL_HOST}
+        - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
+        - WORDPRESS_DB_USER=${MYSQL_USER}
+        - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
     volumes:
         # Usamos el mismo volumen que wp-cli.
         - wp_data:/var/www/html
@@ -83,7 +85,7 @@ services:
  
  
   wpcli:
-    # Es necesario usar 'links: mysql:mysql' ?
+    container_name: ${NAME}-cli
     image: wordpress:cli-php8.0
     depends_on:
         mysql:
@@ -94,10 +96,11 @@ services:
     ## Este usuario emplea el mismo id de usuario que wordpress, 33. Se evitan problemas de permisos usando cli.
     user: xfs
     environment:
+        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
         - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
         - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
         - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
-        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+        - WORDPRESS_TABLE_PREFIX= "wp_"
     # Usamos el mismo volumen que wp-cli.
     volumes:
         - wp_data:/var/www/html
@@ -106,7 +109,7 @@ services:
         - backend-network
     command: >
       /bin/sh -c '      
-      wp core install --path=/var/www/html --url=http://localhost --title="LMS Genérico" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
+      wp language core install es -- activate --path=/var/www/html --url=http://localhost --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
       '
 
 
