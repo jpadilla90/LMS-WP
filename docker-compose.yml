@@ -96,7 +96,7 @@ services:
             condition: service_healthy
 
     ## Este usuario emplea el mismo id de usuario que wordpress, 33. Se evitan problemas de permisos usando cli.
-    #user: xfs
+    user: xfs
     environment:
         - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
         - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
