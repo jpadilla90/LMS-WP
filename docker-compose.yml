@@ -53,9 +53,8 @@ services:
     restart: always
 
   wordpress:
-    user: "33:33"
     container_name: ${NAME}-wp
-    image: wordpress:5.6.0-php7.4
+    image: wordpress:php8.0
     #image: wordpress:5.8.1
     depends_on:
         mysql:
@@ -88,7 +87,6 @@ services:
  
  
   wpcli:
-    user: "33:33"
     container_name: ${NAME}-cli
     image: wordpress:cli-php8.0
     depends_on:
