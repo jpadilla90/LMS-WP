@@ -96,11 +96,10 @@ services:
     ## Este usuario emplea el mismo id de usuario que wordpress, 33. Se evitan problemas de permisos usando cli.
     user: xfs
     environment:
-        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
-        - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
-        - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
-        - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
-        - WORDPRESS_TABLE_PREFIX= "wp_"
+        - WORDPRESS_DB_HOST=${MYSQL_HOST}
+        - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
+        - WORDPRESS_DB_USER=${MYSQL_USER}
+        - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
     # Usamos el mismo volumen que wp-cli.
     volumes:
         - wp_data:/var/www/html
