@@ -1,7 +1,7 @@
 # Plantilla básica de docker-compose para una instalación de Wordpress.
 
 
-version: '2.3'
+version: '3'
 
 # Cada servicio requiere un contenedor
 
