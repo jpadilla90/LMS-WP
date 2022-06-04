@@ -1,7 +1,7 @@
 # Plantilla básica de docker-compose para una instalación de Wordpress.
-# >Se deben definir las variables de entorno con el archivo .env correspondiente.
-# La versión puede ser necesaria para compatibilidad >Se deben hacer pruebas con esto.
-version: '3.4'
+
+
+version: '2.3'
 
 # Cada servicio requiere un contenedor
 
@@ -9,16 +9,16 @@ services:
 
 # Servicio MySQL.
   mysql:
-    image: mysql:8.0
+    image: mysql:latest
     # El comando evita que use la contraseña de root en vez de la de mysql.
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - "3306:3306"
     environment:
-        - MYSQL_ROOT_PASSWORD=root
-        - MYSQL_DATABASE=wp_database
-        - MYSQL_USER=wp_user
-        - MYSQL_PASSWORD=wp_password
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - MYSQL_DATABASE=${WORDPRESS_DB_NAME}
+        - MYSQL_USER=${WORDPRESS_DB_USER}
+        - MYSQL_PASSWORD=${WORDPRESS_DB_PASSWORD}
     volumes:
         - mysql_data:/var/lib/mysql
     networks:
@@ -33,7 +33,11 @@ services:
 # Servicio Phpmyadmin
   phpmyadmin:
     # Imagen Docker
-    image: phpmyadmin:5.1
+    image: phpmyadmin:latest
+    # Establecemos dependencias con otros servicios.
+    depends_on:
+        mysql:
+           condition: service_healthy
     # Entorno empleado. Ver anexo al final del documento.
     environment:
         - PMA_ARBITRARY=1
@@ -44,27 +48,26 @@ services:
     networks:
         - frontend-network
         - backend-network
-    # Establecemos dependencias con otros servicios.
-    depends_on:
-        mysql:
-            condition: service_healthy
+
     # Si hay fallo en el servicio, se reinicia.
     restart: always
 
   wordpress:
-    image: wordpress:5.8.1
+    container_name: ${NAME}-wp
+    image: wordpress:latest
+    #image: wordpress:5.8.1
     depends_on:
         mysql:
             condition: service_healthy
     ports:
-        - "80:80"
+        - 80:80
+        - 443:443
     environment:
-        - WORDPRESS_DB_NAME=wp_database
-        - WORDPRESS_DB_USER=wp_user
-        - WORDPRESS_DB_PASSWORD=wp_password
-        - WORDPRESS_DB_HOST=mysql
-        - WAIT_HOSTS=mysql:3306 
-        # Parte del script del dockerfile /wait para esperar a que MySQL este operativo https://github.com/ufoscout/docker-compose-wait       
+        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+        - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+        - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+        - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+        - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
     volumes:
         # Usamos el mismo volumen que wp-cli.
         - wp_data:/var/www/html
@@ -84,7 +87,7 @@ services:
  
  
   wpcli:
-    # Es necesario usar 'links: mysql:mysql' ?
+    container_name: ${NAME}-cli
     image: wordpress:cli-php8.0
     depends_on:
         mysql:
@@ -95,11 +98,11 @@ services:
     ## Este usuario emplea el mismo id de usuario que wordpress, 33. Se evitan problemas de permisos usando cli.
     user: xfs
     environment:
-        - WORDPRESS_DB_NAME=wp_database
-        - WORDPRESS_DB_USER=wp_user
-        - WORDPRESS_DB_PASSWORD=wp_password
-        - WORDPRESS_DB_HOST=mysql
-        - WAIT_HOSTS=mysql:3306 
+        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+        - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+        - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+        - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+        - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
     # Usamos el mismo volumen que wp-cli.
     volumes:
         - wp_data:/var/www/html
@@ -108,8 +111,11 @@ services:
         - backend-network
     command: >
       /bin/sh -c '      
-      wp core install --path=/var/www/html --url=http://localhost --title="LMS Genérico" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
+      wp core install --url=localhost --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
       '
+    # wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --allow-root
+    #--path=/var/www/html
+
 
 
 # Definimos las dos redes necesarias. Ojo con la indentación.
