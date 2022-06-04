@@ -111,7 +111,9 @@ services:
         - backend-network
     command: >
       /bin/sh -c '      
-      wp core install --url=localhost --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
+      wp core download --locale=es_ES --force       
+      wp core install --path=/var/www/html --url=http://localhost --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
+      wp theme install education-lms --activate
       '
     # wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --allow-root
     #--path=/var/www/html
