@@ -55,7 +55,8 @@ services:
   wordpress:
     user: "33:33"
     container_name: ${NAME}-wp
-    image: wordpress:5.8.1
+    image: wordpress:5.6.0-php7.4
+    #image: wordpress:5.8.1
     depends_on:
         mysql:
             condition: service_healthy
@@ -97,11 +98,11 @@ services:
 
     ## Este usuario emplea el mismo id de usuario que wordpress, 33. Se evitan problemas de permisos usando cli.
     #user: xfs
-    # environment:
-    #     - WORDPRESS_DB_HOST=${MYSQL_HOST}
-    #     - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
-    #     - WORDPRESS_DB_USER=${MYSQL_USER}
-    #     - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
+    environment:
+        - WORDPRESS_DB_HOST=${MYSQL_HOST}
+        - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
+        - WORDPRESS_DB_USER=${MYSQL_USER}
+        - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
     # Usamos el mismo volumen que wp-cli.
     volumes:
         - wp_data:/var/www/html
