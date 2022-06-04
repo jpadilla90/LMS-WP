@@ -53,7 +53,7 @@ services:
     restart: always
 
   wordpress:
-    user: 1000:1000
+    user: 33:33
     container_name: ${NAME}-wp
     image: wordpress:5.8.1
     depends_on:
@@ -86,7 +86,7 @@ services:
  
  
   wpcli:
-    user: 1000:1000
+    user: 33:33
     container_name: ${NAME}-cli
     image: wordpress:cli-php8.0
     depends_on:
@@ -110,7 +110,7 @@ services:
         - backend-network
     command: >
       /bin/sh -c '      
-      wp core install --path=/var/www/html --url=http://localhost --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
+      wp core install --path=/var/www/html --url=localhost --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
       '
     # wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --allow-root
 
