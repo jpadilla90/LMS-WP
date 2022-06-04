@@ -111,8 +111,9 @@ services:
     command: >
       /bin/sh -c '      
       wp core install --path=/var/www/html --url=http://localhost --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
-      wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --allow-root
       '
+    # wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --allow-root
+
 
 
 # Definimos las dos redes necesarias. Ojo con la indentación.
