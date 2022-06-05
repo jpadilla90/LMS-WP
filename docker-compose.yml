@@ -90,9 +90,12 @@ services:
     command: >
         /bin/sh -c '
         wp core install --url=192.168.0.13 --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root --skip-themes --skip-plugins
+        && wp language core install es_ES
         && wp site switch-language es_ES
         && wp theme install https://wordpress.org/themes/download/education-lms.zip --activate
+        && wp plugin install elementor learnpress learnpress-course-review one-click-demo-import woocommerce --activate
         '
+        # 
 
 
 networks:
