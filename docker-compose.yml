@@ -85,9 +85,10 @@ services:
         - frontend-network
         - backend-network
     command: >
-      /bin/sh -c '      
-      wp core install --url=192.168.0.13 --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
-      '
+      /bin/sh -c "      
+      wp core install --url=192.168.0.13 --title="Tu LMS autodesplegado" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
+      && wp theme install LearnPress --activate
+      "
 
 networks:
     frontend-network:
