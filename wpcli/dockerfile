@@ -2,8 +2,9 @@ FROM wordpress:cli-php8.0
 
 LABEL title="CLI-LMS"
 
-ADD commands.sh /commands.sh
-RUN chmod +x /commands.sh
-
-ENTRYPOINT ["/commands.sh"]
-USER 33:33
+COPY commands.sh /commands.sh
+#ADD commands.sh /commands.sh
+RUN chmod +x /commands.sh \
+CMD  ["/commands.sh"]
+#ENTRYPOINT ["/commands.sh"]
+#USER 33:33
