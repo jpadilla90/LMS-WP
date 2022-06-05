@@ -1,0 +1,7 @@
+FROM wordpress:cli-php8.0
+
+LABEL title="CLI-LMS"
+
+COPY commands.sh /commands.sh
+RUN ["chmod", "+x", "/commands.sh"]
+ENTRYPOINT ["/commands.sh"]
