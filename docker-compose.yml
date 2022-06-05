@@ -67,6 +67,7 @@ services:
   wpcli:
     container_name: ${NAME}-cli
     image: wordpress:cli-php8.0
+    build: ./wpcli
     depends_on:
         mysql:
             condition: service_healthy
@@ -84,11 +85,10 @@ services:
     networks:
         - frontend-network
         - backend-network
-    command: >
-      /bin/sh -c "      
-      wp core install --url=192.168.0.13 --title="Tu LMS autodesplegado" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
-      && wp theme install LearnPress --activate
-      "
+    #Falla con más de una linea. Buscar alternativa.
+    # command: >
+    #   /bin/sh -c "wp core install --url=192.168.0.13 --title="Tu LMS autodesplegado" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root &&
+    #   wp theme install learnpress.4.0.0 --activate"
 
 networks:
     frontend-network:
