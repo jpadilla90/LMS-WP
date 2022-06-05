@@ -3,6 +3,7 @@ version: '2.3'
 services:
 
   mysql:
+    container_name: mysql
     image: mysql:latest
     command: --default-authentication-plugin=mysql_native_password
     ports:
@@ -24,6 +25,7 @@ services:
         retries: 3
 
   phpmyadmin:
+    container_name: phpmyadmin
     image: phpmyadmin:latest
     depends_on:
         mysql:
@@ -67,7 +69,7 @@ services:
   wpcli:
     container_name: wpcli
     image: wordpress:cli-php8.0
-    #build: ./wpcli
+    build: ./wpcli
     depends_on:
         mysql:
             condition: service_healthy
@@ -86,10 +88,10 @@ services:
         - frontend-network
         - backend-network
     #Falla con más de una linea. Buscar alternativa.
-    command: >
-      /bin/sh -c '      
-      wp core install --url=192.168.0.13 --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
-      '
+    # command: >
+    #   /bin/sh -c '      
+    #   wp core install --url=192.168.0.13 --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
+    #   '
     #   wp theme install learnpress.4.0.0 --activate"
 
 networks:
