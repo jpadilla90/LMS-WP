@@ -1,16 +1,9 @@
-# Plantilla básica de docker-compose para una instalación de Wordpress.
-
-
-version: '3'
-
-# Cada servicio requiere un contenedor
+version: '2.3'
 
 services:
 
-# Servicio MySQL.
   mysql:
-    image: mysql:8.0
-    # El comando evita que use la contraseña de root en vez de la de mysql.
+    image: mysql:latest
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - "3306:3306"
@@ -30,32 +23,23 @@ services:
         timeout: 10s
         retries: 3
 
-# Servicio Phpmyadmin
   phpmyadmin:
-    # Imagen Docker
-    image: phpmyadmin:5.1
-    # Establecemos dependencias con otros servicios.
+    image: phpmyadmin:latest
     depends_on:
         mysql:
            condition: service_healthy
-    # Entorno empleado. Ver anexo al final del documento.
     environment:
         - PMA_ARBITRARY=1
-    # Redirección de puertos. 
     ports:
         - 8080:80
-    # Redes empleadas por este servicio (Definidas al final de la página.)
     networks:
         - frontend-network
         - backend-network
-
-    # Si hay fallo en el servicio, se reinicia.
     restart: always
 
   wordpress:
     container_name: ${NAME}-wp
-    image: wordpress:php8.0
-    #image: wordpress:5.8.1
+    image: wordpress:latest
     depends_on:
         mysql:
             condition: service_healthy
@@ -69,7 +53,6 @@ services:
         - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
         - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
     volumes:
-        # Usamos el mismo volumen que wp-cli.
         - wp_data:/var/www/html
     networks:
         - frontend-network
@@ -80,11 +63,6 @@ services:
         interval: 30s
         timeout: 10s
         retries: 3
-
-    # Servicio Wordpress versión CLI
-    # Lanzamos los comandos con 'docker-compose exec wordpress wp --info'
-    # Podemos convertirlo en alias así: "alias wp="sudo docker-compose exec wordpress wp"
- 
  
   wpcli:
     container_name: ${NAME}-cli
@@ -94,8 +72,6 @@ services:
             condition: service_healthy
         wordpress:
             condition: service_healthy
-
-    ## Este usuario emplea el mismo id de usuario que wordpress, 33. Se evitan problemas de permisos usando cli.
     user: xfs
     environment:
         - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
@@ -103,7 +79,6 @@ services:
         - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
         - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
         - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
-    # Usamos el mismo volumen que wp-cli.
     volumes:
         - wp_data:/var/www/html
     networks:
@@ -111,16 +86,9 @@ services:
         - backend-network
     command: >
       /bin/sh -c '      
-      wp core download --locale=es_ES --force       
-      wp core install --path=/var/www/html --url=http://localhost --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
-      wp theme install education-lms --activate
+      wp core install --url=192.168.0.13 --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
       '
-    # wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --allow-root
-    #--path=/var/www/html
 
-
-
-# Definimos las dos redes necesarias. Ojo con la indentación.
 networks:
     frontend-network:
     backend-network:
