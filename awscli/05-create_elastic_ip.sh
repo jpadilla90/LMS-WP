@@ -12,7 +12,7 @@ INSTANCE_NAME=proyecto-lms
 INSTANCE_ID=$(aws ec2 describe-instances \
             --filters "Name=tag:Name,Values=$INSTANCE_NAME" \
                       "Name=instance-state-name,Values=running" \
-            --query "Reservations[*].Instances[*].InstanceId" \
+            --query "Reservations[*].Instances[*].[InstanceId]" \
             --output text)
 
 # Creamos una IP elástica
