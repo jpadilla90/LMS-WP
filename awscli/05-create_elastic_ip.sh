@@ -9,11 +9,15 @@ export AWS_PAGER=""
 INSTANCE_NAME=LMS
 
 # Obtenemos el Id de la instancia a partir de su nombre
-INSTANCE_ID=$(aws ec2 describe-instances \
-            --filters "Name=tag:Name,Values=$INSTANCE_NAME" \
-                      "Name=instance-state-name,Values=running" \
-            --query "Reservations[*].Instances[*].[InstanceId]" \
-            --output text)
+while [ -z "$INSTANCE_ID" ]:
+do
+    INSTANCE_ID=$(aws ec2 describe-instances \
+                --filters "Name=tag:Name,Values=$INSTANCE_NAME" \
+                        "Name=instance-state-name,Values=running" \
+                --query "Reservations[*].Instances[*].[InstanceId]" \
+                --output text)
+
+done
 
 # Creamos una IP elástica
 ELASTIC_IP=$(aws ec2 allocate-address --query PublicIp --output text)
