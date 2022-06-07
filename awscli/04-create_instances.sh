@@ -13,7 +13,7 @@ KEY_NAME=vockey
 
 SECURITY_GROUP=lms-sg
 
-INSTANCE_NAME=proyecto_lms
+INSTANCE_NAME=proyecto-lms
 
 BOOT_SCRIPT=install.sh
 
