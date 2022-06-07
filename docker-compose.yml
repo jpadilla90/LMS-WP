@@ -4,7 +4,7 @@ services:
 
   mysql:
     container_name: mysql
-    image: mysql:latest
+    image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - "3306:3306"
@@ -26,7 +26,7 @@ services:
 
   phpmyadmin:
     container_name: phpmyadmin
-    image: phpmyadmin:latest
+    image: phpmyadmin:5.1
     depends_on:
         mysql:
            condition: service_healthy
@@ -41,13 +41,13 @@ services:
 
   wordpress:
     container_name: wp
-    image: wordpress:latest
+    image: wordpress:php8.0
     depends_on:
         mysql:
             condition: service_healthy
-    ports:
-        - 80:80
-        - 443:443
+    # ports:
+    #     - 80:80
+    #     - 443:443
     environment:
         - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
         - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
@@ -66,8 +66,8 @@ services:
         timeout: 10s
         retries: 3
  
-  wpcli:
-    container_name: wpcli
+  wpcli_despliegue:
+    container_name: wpcli_despliegue
     image: wordpress:cli-php8.0
     #build: ./wpcli
     depends_on:
@@ -87,16 +87,53 @@ services:
     networks:
         - frontend-network
         - backend-network
+    # Batería de compandos para wp-cli vía alpine (bash/sh) ¿Puede configurarse para que solo se lance una vez al ejecutar? (No dockerfile)
     command: >
         /bin/sh -c '
         wp core install --url=192.168.0.13 --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root --skip-themes --skip-plugins
         && wp language core install es_ES
         && wp site switch-language es_ES
         && wp theme install https://wordpress.org/themes/download/education-lms.zip --activate
-        && wp plugin install elementor learnpress learnpress-course-review one-click-demo-import woocommerce --activate
+        && wp plugin install elementor learnpress learnpress-course-review one-click-demo-import woocommerce smart-slider --activate
         '
-        # 
 
+  wpcli:
+    # Para poder hacer llamadas a wp-cli.
+    container_name: wpcli
+    image: wordpress:cli-php8.0
+    depends_on:
+        mysql:
+            condition: service_healthy
+        wordpress:
+            condition: service_healthy
+    user: xfs
+    environment:
+        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+        - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+        - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+        - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+        - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
+    volumes:
+        - wp_data:/var/www/html
+    networks:
+        - frontend-network
+        - backend-network
+
+  https-portal:
+    container_name: https
+    image: steveltn/https-portal:1
+    ports:
+        - 80:80
+        - 443:443
+    links:
+        - wordpress
+    environment:
+        DOMAINS: lmsmediterraneo.ddns.net -> http://wordpress:80'
+        #local/staging/production
+        STAGE: 'staging' # Don't use production until staging works
+    # FORCE_RENEW: 'true'
+    networks:
+        - frontend-network
 
 networks:
     frontend-network:
@@ -106,7 +143,6 @@ networks:
 volumes:    
     mysql_data:
     wp_data:
-
 
 
 ## Para finalizar docker-compose ##

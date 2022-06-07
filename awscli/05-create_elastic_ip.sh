@@ -6,8 +6,7 @@ set -x
 export AWS_PAGER=""
 
 # Configuramos el nombre de la instancia a la que le vamos a asignar la IP elástica
-INSTANCE_NAME=load-balancer
-
+INSTANCE_NAME=proyecto_lms
 # Obtenemos el Id de la instancia a partir de su nombre
 INSTANCE_ID=$(aws ec2 describe-instances \
             --filters "Name=tag:Name,Values=$INSTANCE_NAME" \
