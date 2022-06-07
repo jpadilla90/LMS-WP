@@ -18,15 +18,15 @@ El objetivo de este proyecto es crear una demo funcional de una web de e-learnin
 ------------
 
 ```markdown
-1. Preparar el script de instalación de docker y docker-compose.
-2. Diseñar el archivo docker-compose con los servicios necesarios para el proyecto.  
-3. Elegir y listar los plugin necesarios para Wordpress.
-4. Elegir un tema para Wordpress y una paleta de colores
-5. Crear un logo de la dimensiones adecuadas (Vía Canva o similar) y una descripción para la bio.
-6. Curso de prueba y depuración de errores.
+1. Preparar el script de instalación de docker y docker-compose. *
+2. Diseñar el archivo docker-compose con los servicios necesarios para el proyecto. *  
+3. Elegir y listar los plugin necesarios para Wordpress. *
+4. Elegir un tema para Wordpress y una paleta de colores *
+5. Crear un logo de la dimensiones adecuadas (Vía Canva o similar) y una descripción para la bio. *
+6. Curso de prueba y depuración de errores. 
 7. Sistema de copia de seguridad.
-8. Dominio gratuito y cambios a los script. (SED)
-9. Pruebas con el certificado HTTPS gratuito 'Let's Encrypt'
+8. Dominio gratuito y cambios a los script. (SED) *
+9. Pruebas con el certificado HTTPS gratuito 'Let's Encrypt' *
 10. Funcionalidades extra como generador de certificados.
 11. Redactar defensa del proyecto, depurar repositorio GitHub.
 ```
