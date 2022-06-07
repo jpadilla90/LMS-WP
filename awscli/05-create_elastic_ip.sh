@@ -16,6 +16,7 @@ do
                         "Name=instance-state-name,Values=running" \
                 --query "Reservations[*].Instances[*].[InstanceId]" \
                 --output text)
+    sleep 5
 
 done
 
