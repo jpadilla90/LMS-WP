@@ -9,7 +9,7 @@ export AWS_PAGER=""
 AMI_ID=ami-0472eef47f816e45d
 COUNT=1
 INSTANCE_TYPE=t2.micro
-KEY_NAME=vockey
+KEY_NAME=test
 
 SECURITY_GROUP=lms-sg
 
