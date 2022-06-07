@@ -7,10 +7,10 @@ export AWS_PAGER=""
 
 # Configuramos el nombre de la instancia a la que le vamos a asignar la IP elástica
 INSTANCE_NAME=proyecto_lms
+
 # Obtenemos el Id de la instancia a partir de su nombre
-# Editado Name=Tags para coincidir con el JSON
 INSTANCE_ID=$(aws ec2 describe-instances \
-            --filters "Name=Tags:Name,Values=$INSTANCE_NAME" \
+            --filters "Name=tag:Name,Values=$INSTANCE_NAME" \
                       "Name=instance-state-name,Values=running" \
             --query "Reservations[*].Instances[*].InstanceId" \
             --output text)
@@ -18,5 +18,5 @@ INSTANCE_ID=$(aws ec2 describe-instances \
 # Creamos una IP elástica
 ELASTIC_IP=$(aws ec2 allocate-address --query PublicIp --output text)
 
-# Asociamos la IP elástica a la instancia del balanceador
+# Asociamos la IP elástica a la instancia
 aws ec2 associate-address --instance-id $INSTANCE_ID --public-ip $ELASTIC_IP
