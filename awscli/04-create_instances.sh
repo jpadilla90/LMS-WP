@@ -13,7 +13,7 @@ KEY_NAME=vockey
 
 SECURITY_GROUP=lms-sg
 
-INSTANCE_NAME_LMS=proyecto_lms
+INSTANCE_NAME=proyecto_lms
 
 BOOT_SCRIPT=install.sh
 
@@ -25,4 +25,4 @@ aws ec2 run-instances \
     --key-name $KEY_NAME \
     --security-groups $SECURITY_GROUP_ \
     --user-data file://$BOOT_SCRIPT \
-    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME_LMS}]"
+    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME}]"
