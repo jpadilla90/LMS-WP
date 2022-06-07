@@ -45,9 +45,9 @@ services:
     depends_on:
         mysql:
             condition: service_healthy
-    # ports:
-    #     - 80:80
-    #     - 443:443
+    ports:
+        - 80:80
+        - 443:443
     environment:
         - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
         - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
@@ -119,21 +119,21 @@ services:
         - frontend-network
         - backend-network
 
-  https-portal:
-    container_name: https
-    image: steveltn/https-portal:1
-    ports:
-        - 80:80
-        - 443:443
-    links:
-        - wordpress
-    environment:
-        DOMAINS: lmsmediterraneo.ddns.net -> http://wordpress:80'
-        #local/staging/production
-        STAGE: 'staging' # Don't use production until staging works
-    # FORCE_RENEW: 'true'
-    networks:
-        - frontend-network
+#   https-portal:
+#     container_name: https
+#     image: steveltn/https-portal:1
+#     ports:
+#         - 80:80
+#         - 443:443
+#     links:
+#         - wordpress
+#     environment:
+#         DOMAINS: lmsmediterraneo.ddns.net -> http://wordpress:80'
+#         #local/staging/production
+#         STAGE: 'staging' # Don't use production until staging works
+#     # FORCE_RENEW: 'true'
+#     networks:
+#         - frontend-network
 
 networks:
     frontend-network:
