@@ -24,7 +24,7 @@ systemctl enable docker
 systemctl start docker
 
 # Clonamos el repositorio
-git clone https://github.com/jpadilla90/LMS-WP.git
+git clone --single-branch -branch aws-https-tests https://github.com/jpadilla90/LMS-WP.git
 
 # Accedemos al proyecto y lo desplegamos
 cd LMS-WP
