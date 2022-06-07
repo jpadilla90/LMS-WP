@@ -9,7 +9,7 @@ export AWS_PAGER=""
 INSTANCE_NAME=LMS
 
 # Obtenemos el Id de la instancia a partir de su nombre
-while [ -z "$INSTANCE_ID" ]:
+while [ -z $INSTANCE_ID ]; 
 do
     INSTANCE_ID=$(aws ec2 describe-instances \
                 --filters "Name=tag:Name,Values=$INSTANCE_NAME" \
