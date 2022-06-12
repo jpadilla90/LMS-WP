@@ -97,43 +97,23 @@ services:
         && wp plugin install elementor learnpress learnpress-course-review one-click-demo-import woocommerce smart-slider --activate
         '
 
-#   wpcli:
-#     # Para poder hacer llamadas a wp-cli.
-#     container_name: wpcli
-#     image: wordpress:cli-php8.0
-#     depends_on:
-#         mysql:
-#             condition: service_healthy
-#         wordpress:
-#             condition: service_healthy
-#     user: xfs
+
+
+#   https-portal:
+#     container_name: https
+#     image: steveltn/https-portal:1
+#     ports:
+#         - 80:80
+#         - 443:443
+#     links:
+#         - wordpress
 #     environment:
-#         - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
-#         - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
-#         - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
-#         - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
-#         - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
-#     volumes:
-#         - wp_data:/var/www/html
+#     #    DOMAINS: lmsmediterraneo.ddns.net -> http://wordpress:80'
+#         #local/staging/production
+#         STAGE: 'local' # Don't use production until staging works
+#     # FORCE_RENEW: 'true'
 #     networks:
 #         - frontend-network
-#         - backend-network
-
-  https-portal:
-    container_name: https
-    image: steveltn/https-portal:1
-    ports:
-        - 80:80
-        - 443:443
-    links:
-        - wordpress
-    environment:
-    #    DOMAINS: lmsmediterraneo.ddns.net -> http://wordpress:80'
-        #local/staging/production
-        STAGE: 'local' # Don't use production until staging works
-    # FORCE_RENEW: 'true'
-    networks:
-        - frontend-network
 
 networks:
     frontend-network:

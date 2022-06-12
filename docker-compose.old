@@ -1,135 +1,21 @@
-# Plantilla básica de docker-compose para una instalación de Wordpress.
-
-
-version: '2.3'
-
-# Cada servicio requiere un contenedor
-
-services:
-
-# Servicio MySQL.
-  mysql:
-    image: mysql:latest
-    # El comando evita que use la contraseña de root en vez de la de mysql.
-    command: --default-authentication-plugin=mysql_native_password
-    ports:
-      - "3306:3306"
-    environment:
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - MYSQL_DATABASE=${WORDPRESS_DB_NAME}
-        - MYSQL_USER=${WORDPRESS_DB_USER}
-        - MYSQL_PASSWORD=${WORDPRESS_DB_PASSWORD}
-    volumes:
-        - mysql_data:/var/lib/mysql
-    networks:
-        - backend-network
-    restart: always
-    healthcheck:
-        test: mysql --user=${MYSQL_USER:-wp_user} --password=${MYSQL_PASSWORD:-wp_password} -e "USE wp_database;"
-        interval: 30s
-        timeout: 10s
-        retries: 3
-
-# Servicio Phpmyadmin
-  phpmyadmin:
-    # Imagen Docker
-    image: phpmyadmin:latest
-    # Establecemos dependencias con otros servicios.
-    depends_on:
-        mysql:
-           condition: service_healthy
-    # Entorno empleado. Ver anexo al final del documento.
-    environment:
-        - PMA_ARBITRARY=1
-    # Redirección de puertos. 
-    ports:
-        - 8080:80
-    # Redes empleadas por este servicio (Definidas al final de la página.)
-    networks:
-        - frontend-network
-        - backend-network
-
-    # Si hay fallo en el servicio, se reinicia.
-    restart: always
-
-  wordpress:
-    container_name: ${NAME}-wp
-    image: wordpress:latest
-    #image: wordpress:5.8.1
-    depends_on:
-        mysql:
-            condition: service_healthy
-    ports:
-        - 80:80
-        - 443:443
-    environment:
-        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
-        - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
-        - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
-        - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
-        - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
-    volumes:
-        # Usamos el mismo volumen que wp-cli.
-        - wp_data:/var/www/html
-    networks:
-        - frontend-network
-        - backend-network
-    restart: always
-    healthcheck:
-        test: curl --fail http://wordpress || exit 1
-        interval: 30s
-        timeout: 10s
-        retries: 3
-
-    # Servicio Wordpress versión CLI
-    # Lanzamos los comandos con 'docker-compose exec wordpress wp --info'
-    # Podemos convertirlo en alias así: "alias wp="sudo docker-compose exec wordpress wp"
- 
- 
-  wpcli:
-    container_name: ${NAME}-cli
-    image: wordpress:cli-php8.0
-    depends_on:
-        mysql:
-            condition: service_healthy
-        wordpress:
-            condition: service_healthy
-
-    ## Este usuario emplea el mismo id de usuario que wordpress, 33. Se evitan problemas de permisos usando cli.
-    user: xfs
-    environment:
-        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
-        - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
-        - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
-        - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
-        - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
-    # Usamos el mismo volumen que wp-cli.
-    volumes:
-        - wp_data:/var/www/html
-    networks:
-        - frontend-network
-        - backend-network
-    command: >
-      /bin/sh -c '      
-      wp core install --url=localhost --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root
-      '
-    # wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD --allow-root
-    #--path=/var/www/html
-
-
-
-# Definimos las dos redes necesarias. Ojo con la indentación.
-networks:
-    frontend-network:
-    backend-network:
-
-# Definimos los volúmenes disponibles: Uno para la BD y otro para los datos de Wordpress.
-volumes:    
-    mysql_data:
-    wp_data:
-
-
-
-## Para finalizar docker-compose ##
-# docker-compose down -v
-# -v elimina los volúmenes 
+#   wpcli:
+#     # Para poder hacer llamadas a wp-cli.
+#     container_name: wpcli
+#     image: wordpress:cli-php8.0
+#     depends_on:
+#         mysql:
+#             condition: service_healthy
+#         wordpress:
+#             condition: service_healthy
+#     user: xfs
+#     environment:
+#         - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+#         - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+#         - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+#         - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+#         - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
+#     volumes:
+#         - wp_data:/var/www/html
+#     networks:
+#         - frontend-network
+#         - backend-network

@@ -1,0 +1,4 @@
+FROM wordpress:php8.0
+
+RUN apt install -y\
+nano
