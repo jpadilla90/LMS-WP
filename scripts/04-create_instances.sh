@@ -8,7 +8,9 @@ export AWS_PAGER=""
 # Variables de configuración
 AMI_ID=ami-0472eef47f816e45d
 COUNT=1
-INSTANCE_TYPE=t2.micro
+# INSTANCE_TYPE=t2.micro
+INSTANCE_TYPE=t2.small
+# Test de rendimiento
 KEY_NAME=test
 
 SECURITY_GROUP=lms-sg
