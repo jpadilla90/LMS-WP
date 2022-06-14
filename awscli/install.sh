@@ -24,9 +24,8 @@ systemctl enable docker
 systemctl start docker
 
 # Clonamos el repositorio
-# git clone https://github.com/jpadilla90/LMS-WP.git
+git clone https://github.com/jpadilla90/LMS-WP.git
 
 # Accedemos al proyecto y lo desplegamos
 cd LMS-WP
-echo "Configurando el sitio Wordpress"
 docker-compose up -d

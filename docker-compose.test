@@ -6,6 +6,8 @@ services:
     container_name: mysql
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
+    cap_add:
+        - SYS_NICE  # CAP_SYS_NICE. Handles 'mbind: Operation not permitted' silently.
     ports:
       - "3306:3306"
     environment:
@@ -18,8 +20,6 @@ services:
     networks:
         - backend-network
     restart: always
-    cap_add:
-        - SYS_NICE  # CAP_SYS_NICE. Handles 'mbind: Operation not'
     healthcheck:
         test: mysql --user=${MYSQL_USER:-wp_user} --password=${MYSQL_PASSWORD:-wp_password} -e "USE wp_database;"
         interval: 30s
@@ -89,17 +89,37 @@ services:
     networks:
         - frontend-network
         - backend-network
-    # Batería de compandos para wp-cli vía alpine (bash/sh) ¿Puede configurarse para que solo se lance una vez al ejecutar? (No dockerfile)
+    # Batería de compandos para wp-cli vía alpine (bash/sh) http://localhost
     command: >
         /bin/sh -c '
-        wp core install --url=http://localhost/ --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root --skip-themes --skip-plugins
+        wp core install --url=192.168.0.13 --title="Mediterraneo LMS" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root --skip-themes --skip-plugins
         && wp language core install es_ES
         && wp site switch-language es_ES
         && wp theme install https://wordpress.org/themes/download/education-lms.zip --activate
-        && wp plugin install elementor learnpress learnpress-course-review one-click-demo-import woocommerce smart-slider --activate
+        && wp plugin install learnpress learnpress-course-review elementor one-click-demo-import woocommerce smart-slider-3 --activate
         '
 
-
+#   wpcli:
+#     # Para poder hacer llamadas a wp-cli.
+#     container_name: wpcli
+#     image: wordpress:cli-php8.0
+#     depends_on:
+#         mysql:
+#             condition: service_healthy
+#         wordpress:
+#             condition: service_healthy
+#     user: xfs
+#     environment:
+#         - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+#         - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+#         - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+#         - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+#         - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
+#     volumes:
+#         - wp_data:/var/www/html
+#     networks:
+#         - frontend-network
+#         - backend-network
 
 #   https-portal:
 #     container_name: https
@@ -110,9 +130,10 @@ services:
 #     links:
 #         - wordpress
 #     environment:
-#     #    DOMAINS: lmsmediterraneo.ddns.net -> http://wordpress:80'
+#     #    STAGE: 'production'
+#         DOMAINS: 192.168.0.13 -> http://wordpress:80'
 #         #local/staging/production
-#         STAGE: 'local' # Don't use production until staging works
+#          # Don't use production until staging works
 #     # FORCE_RENEW: 'true'
 #     networks:
 #         - frontend-network
