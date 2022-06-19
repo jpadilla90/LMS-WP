@@ -92,11 +92,11 @@ services:
     # Batería de compandos para wp-cli vía alpine (bash/sh) ¿Puede configurarse para que solo se lance una vez al ejecutar? (No dockerfile)
     command: >
         /bin/sh -c '
-        wp core install --url=http://localhost/ --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root --skip-themes --skip-plugins
+        wp core install --url=mediterraneolms.ml/ --title="LMS With Wordpress" --admin_user=admin --admin_password=admin --admin_email=foo@bar.com --allow-root --skip-themes --skip-plugins
         && wp language core install es_ES
         && wp site switch-language es_ES
         && wp theme install https://wordpress.org/themes/download/education-lms.zip --activate
-        && wp plugin install elementor learnpress learnpress-course-review one-click-demo-import woocommerce smart-slider --activate
+        && wp plugin install elementor learnpress learnpress-course-review one-click-demo-import woocommerce smart-slider all-in-one-wp-migration --activate
         '
 
 
@@ -109,9 +109,10 @@ services:
         - 443:443
     links:
         - wordpress
+    restart: always
     environment:
         DOMAINS: 'mediterraneolms.ml -> http://wordpress:80'
-    #    STAGE: 'production' # Don't use production until staging works
+        STAGE: 'production' # Don't use production until staging works
     # FORCE_RENEW: 'true'
     networks:
         - frontend-network
